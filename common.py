@@ -79,7 +79,7 @@ def plot(X: np.ndarray, mixture: GaussianMixture, post: np.ndarray,
             mu[0], mu[1], sigma)
         ax.text(mu[0], mu[1], legend)
     plt.axis('equal')
-    plt.show()
+    # plt.show()
 
 
 def rmse(X, Y):
