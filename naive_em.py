@@ -17,7 +17,15 @@ def estep(X: np.ndarray, mixture: GaussianMixture) -> Tuple[np.ndarray, float]:
             for all components for all examples
         float: log-likelihood of the assignment
     """
-    raise NotImplementedError
+    n, d = X.shape
+    K, _ = mixture.mu.shape
+    soft_counts = []
+    for i, mu in enumerate(mixture.mu):
+        tiled_vector = np.tile(X[i, :], (K, 1))
+        soft_counts.append(mixture.p[i] * MN.pdf(X, mu, mixture.var[i]))
+    soft_counts = np.array(soft_counts)
+
+    return soft_counts, soft_counts.sum()
 
 
 def mstep(X: np.ndarray, post: np.ndarray) -> GaussianMixture:
@@ -50,4 +58,9 @@ def run(X: np.ndarray, mixture: GaussianMixture,
             for all components for all examples
         float: log-likelihood of the current assignment
     """
-    raise NotImplementedError
+
+    post, ll = estep(X, mixture)
+
+    return post, ll
+
+

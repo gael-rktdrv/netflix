@@ -99,3 +99,4 @@ def bic(X: np.ndarray, mixture: GaussianMixture,
         float: the BIC for this mixture
     """
     raise NotImplementedError
+
