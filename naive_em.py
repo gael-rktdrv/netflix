@@ -17,15 +17,20 @@ def estep(X: np.ndarray, mixture: GaussianMixture) -> Tuple[np.ndarray, float]:
             for all components for all examples
         float: log-likelihood of the assignment
     """
-    n, d = X.shape
     K, _ = mixture.mu.shape
-    soft_counts = []
-    for i, mu in enumerate(mixture.mu):
-        tiled_vector = np.tile(X[i, :], (K, 1))
-        soft_counts.append(mixture.p[i] * MN.pdf(X, mu, mixture.var[i]))
-    soft_counts = np.array(soft_counts)
+    n, d = X.shape
+    gprob = lambda x, m, s: (1 / (2*np.pi*s)**(d/2)) * (np.exp(-((x-m)**2).sum(axis=1) / (2*s)))
+    soft_counts, ll_ = np.empty((0,K)), np.empty((0,K))
 
-    return soft_counts, soft_counts.sum()
+    for i in range(n):
+        prob = gprob(np.tile(X[i], (K,1)), mixture.mu, mixture.var)
+        prob_ll = prob.reshape(1, K)
+        prob_post = (prob*mixture.p)/(prob*mixture.p).sum()
+        soft_counts = np.append(soft_counts, prob_post, axis=0)
+        ll_ =  np.append(ll_, prob_ll, axis=0)
+    ll = np.log((ll_*mixture.p).sum(axis=1)).sum()
+
+    return soft_counts, ll
 
 
 def mstep(X: np.ndarray, post: np.ndarray) -> GaussianMixture:
@@ -40,7 +45,20 @@ def mstep(X: np.ndarray, post: np.ndarray) -> GaussianMixture:
     Returns:
         GaussianMixture: the new gaussian mixture
     """
-    raise NotImplementedError
+    K, _ = post.shape
+    n, d = X.shape
+    up_mu, up_var, up_p = np.empty((0, K)), np.empty(K), np.empty(K)
+    for i in range(n):
+        temp_mu = post[i] * X[i] / (post[i].sum*())
+        up_mu = np.append(up_mu, temp_mu)
+        temp_var = (post[i] * (X[i] - temp_mu)**2) / (post[i].sum*())
+        up_var = np.append(up_var, temp_var)
+        temp_p = 1/n * post[i].sum()
+        up_p = np.append(up_p, temp_p)
+
+    mixture = GaussianMixture(mu=up_mu, var=up_var, p=up_p)
+
+    return mixture
 
 
 def run(X: np.ndarray, mixture: GaussianMixture,
