@@ -3,6 +3,7 @@ import em
 import common
 from common import GaussianMixture
 from scipy.stats import multivariate_normal as MN
+from scipy.stats import norm as N
 
 X = np.loadtxt("test_incomplete.txt")
 X_gold = np.loadtxt("test_complete.txt")
@@ -55,19 +56,17 @@ def estep(X, mixture):
     K, _ = mixture.mu.shape
     n, d = X.shape
     gprob = lambda x, m, s: (1 / (2*np.pi*s)**(d/2)) * (np.exp(-((x-m)**2).sum(axis=1) / (2*s)))
-
-    soft_counts = np.empty((0,K))
+    soft_counts, ll_ = np.empty((0,K)), np.empty((0,K))
 
     for i in range(n):
         prob = gprob(np.tile(X[i], (K,1)), mixture.mu, mixture.var)
-        prob = (prob*mixture.p)/(prob*mixture.p).sum()
-        prob = prob.reshape(1, K)
-        soft_counts = np.append(soft_counts, prob, axis=0)
+        # import pdb; pdb.set_trace()
+        prob_ll = prob.reshape(1, K)
+        prob_post = (prob*mixture.p)/(prob*mixture.p).sum()
+        soft_counts = np.append(soft_counts, prob_post, axis=0)
+        ll_ =  np.append(ll_, prob_ll, axis=0)
+    ll = np.log((ll_*mixture.p).sum(axis=1)).sum()
 
-    import pdb; pdb.set_trace()
-
-    ll = np.log((soft_counts*mixture.p).sum(axis=0)).sum()
-    # ll = np.sum(np.log(np.sum(soft_counts, axis = 0)))
     return soft_counts, ll
 
 def main():
