@@ -128,7 +128,8 @@ def testing_mstep():
             temp = 0
             # import pdb; pdb.set_trace()
             for jj in range(nrow):
-                temp += post[jj] * norm(X[jj] - up_mu[i]) ** 2
+                if i == jj:
+                    temp += post[jj] * norm(X[jj] - up_mu[i])**2
                 # import pdb; pdb.set_trace()
             up_var[i] = temp.sum() / (post.sum(axis=0)[i] * ncol)
 
