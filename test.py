@@ -130,9 +130,9 @@ def testing_mstep():
             up_mu[i] = val / post.sum(axis=0)[i]
             temp = 0
             # import pdb; pdb.set_trace()
-            for j in range(nrow):
-                temp += post.T[i] * norm(X[j] - up_mu[i])**2 
-            import pdb; pdb.set_trace()
+            for jj in range(nrow):
+                temp += post[jj] * norm(X[jj] - up_mu[i])**2 
+            # import pdb; pdb.set_trace()
             up_var[i] = temp.sum() / (post.sum() * ncol)
 
         return GaussianMixture(mu=up_mu, var=up_var, p=up_p)
