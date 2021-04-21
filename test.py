@@ -183,7 +183,8 @@ def testing_bic():
     )
 
     mixture = GaussianMixture(mu=mu, var=var, p=p)
-    _, log_likelihood = naive_em.estep(X, mixture)
+    mixture, *_, log_likelihood= naive_em.run(X, mixture)
+
 
     def get_bic(X, mixture, log_likelihood):
         N, _ = X.shape
