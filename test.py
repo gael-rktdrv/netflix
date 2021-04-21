@@ -118,20 +118,26 @@ def testing_mstep():
     def mstep(X: np.ndarray, post: np.ndarray) -> GaussianMixture:
 
         nrow, ncol = X.shape
-        nom_ = np.dot(post.T, X)
-        up_mu = np.zeros(nom_.shape)  # Initialize updates of mu
-        up_var = np.zeros(nom_.shape[0])  # Initialize updates of var
-        up_p = 1 / nrow * post.sum(axis=0)  # Updates of p
+        _, K = post.shape
 
-        for i, val in enumerate(nom_):
-            up_mu[i] = val / post.sum(axis=0)[i]
-            temp = 0
+        up_mu = np.zeros((K, ncol))  # Initialize updates of mu
+        up_var = np.zeros(K)  # Initialize updates of var
+        n_hat = post.sum(axis=0)  # Nk
+        """Updates"""
+        up_p = 1 / nrow * n_hat  # Updates of p
+        for j in range(K):
+            up_mu[j] = (post.T @ X)[j] / post.sum(axis=0)[j]
+        #     temp = 0
+        #     for jj in range(nrow):
+        #         if i == jj:
+        #             temp = post[jj] * norm(X[jj] - up_mu[i])**2
+        #         # import pdb; pdb.set_trace()
+        #     up_var[i] = temp.sum() / (post.sum(axis=0)[i] * ncol)
             # import pdb; pdb.set_trace()
-            for jj in range(nrow):
-                if i == jj:
-                    temp += post[jj] * norm(X[jj] - up_mu[i])**2
-                # import pdb; pdb.set_trace()
-            up_var[i] = temp.sum() / (post.sum(axis=0)[i] * ncol)
+            # sse = ((norm(up_mu[j] - X[j])) ** 2) * post[:, j]
+            sse = ((up_mu[j] - X)**2).sum(axis=1) @ post[:, j]
+            # sse = ((up_mu[j] - X[j]) ** 2).sum() * post[:, j]
+            up_var[j] = sse.sum() / (ncol * n_hat[j])
 
         return GaussianMixture(mu=up_mu, var=up_var, p=up_p)
 

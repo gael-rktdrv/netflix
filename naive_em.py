@@ -4,7 +4,6 @@ import numpy as np
 from common import GaussianMixture
 
 
-
 def estep(X: np.ndarray, mixture: GaussianMixture) -> Tuple[np.ndarray, float]:
     """E-step: Softly assigns each datapoint to a gaussian component
 
@@ -45,20 +44,21 @@ def mstep(X: np.ndarray, post: np.ndarray) -> GaussianMixture:
     Returns:
         GaussianMixture: the new gaussian mixture
     """
-    K, _ = post.shape
-    n, d = X.shape
-    up_mu, up_var, up_p = np.empty((0, K)), np.empty(K), np.empty(K)
-    for i in range(n):
-        temp_mu = post[i] * X[i] / (post[i].sum*())
-        up_mu = np.append(up_mu, temp_mu)
-        temp_var = (post[i] * (X[i] - temp_mu)**2) / (post[i].sum*())
-        up_var = np.append(up_var, temp_var)
-        temp_p = 1/n * post[i].sum()
-        up_p = np.append(up_p, temp_p)
+    nrow, ncol = X.shape
+    _, K = post.shape
 
-    mixture = GaussianMixture(mu=up_mu, var=up_var, p=up_p)
+    up_mu = np.zeros((K, ncol))  # Initialize updates of mu
+    up_var = np.zeros(K)  # Initialize updates of var
+    n_hat = post.sum(axis=0)  # Nk
+    """Updates"""
+    up_p = 1 / nrow * n_hat  # Updates of p
+    for j in range(K):
+        up_mu[j] = (post.T @ X)[j] / post.sum(axis=0)[j]
+        # import pdb; pdb.set_trace()
+        sse = ((up_mu[j] - X[j]) ** 2).sum() * post[:, j]
+        up_var[j] = sse.sum() / (ncol * n_hat[j])
 
-    return mixture
+    return GaussianMixture(mu=up_mu, var=up_var, p=up_p)
 
 
 def run(X: np.ndarray, mixture: GaussianMixture,
@@ -77,8 +77,13 @@ def run(X: np.ndarray, mixture: GaussianMixture,
         float: log-likelihood of the current assignment
     """
 
-    post, ll = estep(X, mixture)
+    soft_counts, ll = estep(X, mixture)
+    post = soft_counts * mixture.p
 
-    return post, ll
+    while ll - new_ll > 1e-6 * new_ll:
+        
+
+
+    return soft_counts, ll
 
 
