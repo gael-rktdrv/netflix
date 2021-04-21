@@ -195,5 +195,6 @@ def testing_bic():
 
     print(f"BIC: {get_bic(X, mixture, log_likelihood)}")
 
+
 if __name__ == "__main__":
     testing_bic()
