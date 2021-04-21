@@ -53,29 +53,10 @@ def testing_estep():
     print(f'var shape: {var.shape}')
     print(f'p shape: {p.shape}\n')
 
-    def estep(X, mixture):
-        K, _ = mixture.mu.shape
-        n, d = X.shape
-        gprob = lambda x, m, s: (1 / (2*np.pi*s)**(d/2)) * (np.exp(-((x-m)**2).sum(axis=1) / (2*s)))
-        soft_counts, ll_ = np.empty((0,K)), np.empty((0,K))
-
-        for i in range(n):
-            prob = gprob(np.tile(X[i], (K,1)), mixture.mu, mixture.var)
-            prob = prob.reshape(1, K)
-            prob_post = (prob*mixture.p)/(prob*mixture.p).sum()
-            soft_counts = np.append(soft_counts, prob_post, axis=0)
-            ll_ =  np.append(ll_, prob, axis=0)
-        ll = np.log((ll_*mixture.p).sum(axis=1)).sum()
-
-        return soft_counts, ll
-
-    def main():
-        mx = GaussianMixture(mu=mu, var=var, p=p)
-        soft_counts, ll = estep(X, mx)
-        print(soft_counts)
-        print(f"\n{ll}\n")
-
-    main()
+    mx = GaussianMixture(mu=mu, var=var, p=p)
+    soft_counts, ll = naive_em.estep(X, mx)
+    print(soft_counts)
+    print(f"\n{ll}\n")
 
 
 def testing_mstep():
@@ -115,37 +96,9 @@ def testing_mstep():
          [0.1917808, 0.0898279, 0.1771067, 0.0317966, 0.1949439, 0.3145441]]
     )
 
-    def mstep(X: np.ndarray, post: np.ndarray) -> GaussianMixture:
 
-        nrow, ncol = X.shape
-        _, K = post.shape
-
-        up_mu = np.zeros((K, ncol))  # Initialize updates of mu
-        up_var = np.zeros(K)  # Initialize updates of var
-        n_hat = post.sum(axis=0)  # Nk
-        """Updates"""
-        up_p = 1 / nrow * n_hat  # Updates of p
-        for j in range(K):
-            up_mu[j] = (post.T @ X)[j] / post.sum(axis=0)[j]
-        #     temp = 0
-        #     for jj in range(nrow):
-        #         if i == jj:
-        #             temp = post[jj] * norm(X[jj] - up_mu[i])**2
-        #         # import pdb; pdb.set_trace()
-        #     up_var[i] = temp.sum() / (post.sum(axis=0)[i] * ncol)
-            # import pdb; pdb.set_trace()
-            # sse = ((norm(up_mu[j] - X[j])) ** 2) * post[:, j]
-            sse = ((up_mu[j] - X)**2).sum(axis=1) @ post[:, j]
-            # sse = ((up_mu[j] - X[j]) ** 2).sum() * post[:, j]
-            up_var[j] = sse.sum() / (ncol * n_hat[j])
-
-        return GaussianMixture(mu=up_mu, var=up_var, p=up_p)
-
-    def main():
-        mixture = mstep(X, post)
-        print(mixture)
-
-    main()
+    mixture = naive_em.mstep(X, post)
+    print(mixture)
 
 
 def testing_run():
