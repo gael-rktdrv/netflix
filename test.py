@@ -144,5 +144,55 @@ def testing_run():
     print(f"LL: {new_ll}")
 
 
+def testing_bic():
+    X = np.array(
+        [[0.8579456, 0.8472517],
+         [0.6235637, 0.3843817],
+         [0.2975346, 0.0567130],
+         [0.2726563, 0.4776651],
+         [0.8121687, 0.4799772],
+         [0.3927848, 0.8360788],
+         [0.3373962, 0.6481719],
+         [0.3682415, 0.9571552],
+         [0.1403508, 0.8700873],
+         [0.4736081, 0.8009108],
+         [0.5204775, 0.6788795],
+         [0.7206326, 0.5820198],
+         [0.5373732, 0.7586156],
+         [0.1059076, 0.4736004],
+         [0.1863323, 0.7369182]]
+    )
+
+    K = 6
+
+    mu = np.array(
+        [[0.62356370, 0.38438171],
+         [0.39278480, 0.83607876],
+         [0.81216873, 0.47997717],
+         [0.14035078, 0.87008726],
+         [0.36824154, 0.95715516],
+         [0.10590761, 0.47360042]]
+    )
+
+    p = np.array(
+        [0.1680912, 0.15835331, 0.21384187, 0.14223565, 0.14295074, 0.17452722]
+    )
+
+    var = np.array(
+        [0.10038354, 0.07227467, 0.13240693, 0.12411825, 0.10497521, 0.12220856]
+    )
+
+    mixture = GaussianMixture(mu=mu, var=var, p=p)
+    _, log_likelihood = naive_em.estep(X, mixture)
+
+    def get_bic(X, mixture, log_likelihood):
+        N, _ = X.shape
+        n_params = mixture.mu.shape[0] * mixture.mu.shape[1] + mixture.p.shape[0] + mixture.var.shape[0]
+        # import pdb; pdb.set_trace()
+    
+        return log_likelihood - 1/2 * (n_params - 1) * np.log(N)
+
+    print(f"BIC: {get_bic(X, mixture, log_likelihood)}")
+
 if __name__ == "__main__":
-    testing_run()
+    testing_bic()
