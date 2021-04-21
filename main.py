@@ -14,18 +14,11 @@ def km(X, Ks, seeds):
     costs = {}
     
     for K in Ks:
-        # fig = make_subplots(rows=2, cols=2)
-        # a, b = 1, 1
         temp = []
         for seed in seeds:
             mixture, post = common.init(X, K=K, seed=seed)
             mixture, post, cost = kmeans.run(X, mixture, post)
             title = f'K={K} | seed={seed} | cost={cost:.3f}'
-            # Plotting all 4 seeds
-            # fig.add_trace(
-            #     common.plot(X=X, mixture=mixture, post=post, title=title), 
-            #     row=a, col=b
-            #     )
             name = f'K{K}-seed{seed}'
             common.plot(X=X, mixture=mixture, post=post, title=title)
             plt.savefig('/home/Gael/Documents/Projects/MITx/netflix/km/' + name + '.png')
@@ -33,14 +26,6 @@ def km(X, Ks, seeds):
             plt.close()
             # plt.show()
             temp.append(round(cost, 3))
-            # Managing rows and columns
-            # if a < 2:
-            #     a += 1
-            # else:
-            #     b += 1
-        # fig.update_layout(height=600, width=800, title_text=f"K={K}")
-        # fig.show()
-
         costs[K] = min(temp)
     print(costs)
 
@@ -49,32 +34,17 @@ def n_em(X, Ks, seeds):
     LL = {}
     
     for K in Ks:
-        # fig = make_subplots(rows=2, cols=2)
-        # a, b = 1, 1
         temp = []
         for seed in seeds:
             mixture, post = common.init(X, K=K, seed=seed)
             mixture, post, ll, _ = naive_em.run(X, mixture)
             title = f'K={K} | seed={seed} | likelihood={ll:.3f}'
-            # Plotting all 4 seeds
-            # fig.add_trace(
-            #     common.plot(X=X, mixture=mixture, post=post, title=title), 
-            #     row=a, col=b
-            #     )
             common.plot(X=X, mixture=mixture, post=post, title=title)
             name = f'K{K}-seed{seed}'
             plt.savefig('/home/Gael/Documents/Projects/MITx/netflix/em/' + name + '.png')
             time.sleep(2)
             plt.close()
-            # plt.show()
             temp.append(round(ll, 3))
-            # Managing rows and columns
-            # if a < 2:
-            #     a += 1
-            # else:
-            #     b += 1
-        # fig.update_layout(height=600, width=800, title_text=f"K={K}")
-        # fig.show()
         LL[K] = max(temp)
     print(f"Likelihoods: \n{LL}")
 
@@ -92,3 +62,38 @@ def main():
 
 if __name__=="__main__":
     main()
+
+
+
+# def n_em(X, Ks, seeds):
+#     LL = {}
+    
+#     for K in Ks:
+#         # fig = make_subplots(rows=2, cols=2)
+#         # a, b = 1, 1
+#         temp = []
+#         for seed in seeds:
+#             mixture, post = common.init(X, K=K, seed=seed)
+#             mixture, post, ll, _ = naive_em.run(X, mixture)
+#             title = f'K={K} | seed={seed} | likelihood={ll:.3f}'
+#             # Plotting all 4 seeds
+#             # fig.add_trace(
+#             #     common.plot(X=X, mixture=mixture, post=post, title=title), 
+#             #     row=a, col=b
+#             #     )
+#             common.plot(X=X, mixture=mixture, post=post, title=title)
+#             name = f'K{K}-seed{seed}'
+#             plt.savefig('/home/Gael/Documents/Projects/MITx/netflix/em/' + name + '.png')
+#             time.sleep(2)
+#             plt.close()
+#             # plt.show()
+#             temp.append(round(ll, 3))
+#             # Managing rows and columns
+#             # if a < 2:
+#             #     a += 1
+#             # else:
+#             #     b += 1
+#         # fig.update_layout(height=600, width=800, title_text=f"K={K}")
+#         # fig.show()
+#         LL[K] = max(temp)
+#     print(f"Likelihoods: \n{LL}")
