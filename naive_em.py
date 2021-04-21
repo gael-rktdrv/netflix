@@ -77,23 +77,6 @@ def run(X: np.ndarray, mixture: GaussianMixture) -> Tuple[GaussianMixture, np.nd
             for all components for all examples
         float: log-likelihood of the current assignment
     """
-
-    # old_ll = -np.inf
-    # new_ll = estep(X, mixture)[1]
-    # break_count = 0
-
-    # # import pdb; pdb.set_trace()
-
-    # while new_ll - old_ll > 1e-6 * abs(new_ll):
-    #     # import pdb; pdb.set_trace()
-    #     old_ll = new_ll
-    #     soft_counts, new_ll = estep(X, mixture)   
-    #     post = soft_counts * mixture.p
-    #     mixture = mstep(X, post) 
-    #     break_count += 1
-    #     if break_count > 100:
-    #         break
-
     old_ll = None
     new_ll = None
     while (old_ll is None or new_ll - old_ll > 1e-6 * abs(new_ll)):
