@@ -9,7 +9,7 @@ We will use mixtures of Gaussians to solve this problem. The model assumes that 
 ### Setup
 Libraries: **Numpy** and **Matplotlib** <br>
 modules: 
-- *kmeans* a baseline using the K-means algorithm
+- *kmeans.py* a baseline using the K-means algorithm
 - *naive_em.py* a first version of the EM algorithm 
 - *em.py* a mixture model for collaborative filtering 
 - *common.py* common functions for all models 
