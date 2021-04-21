@@ -6,11 +6,11 @@ We will use mixtures of Gaussians to solve this problem. The model assumes that 
 ### Setup
 Libraries: **Numpy** and **Matplotlib** <br>
 modules: 
--*kmeans* a baseline using the K-means algorithm
--*naive_em.py* a first version of the EM algorithm (tabs 3-4)
--*em.py* a mixture model for collaborative filtering (tabs 7-8)
--*common.py* common functions for all models (tab 5)
--*main.py* 
--*test.py* for testing implementations of EM for a given test case
+- *kmeans* a baseline using the K-means algorithm
+- *naive_em.py* a first version of the EM algorithm (tabs 3-4)
+- *em.py* a mixture model for collaborative filtering (tabs 7-8)
+- *common.py* common functions for all models (tab 5)
+- *main.py* 
+- *test.py* for testing implementations of EM for a given test case
 
  
