@@ -136,10 +136,10 @@ def testing_run():
     mixture = GaussianMixture(mu=mu, var=var, p=p)
 
     """Updates"""
-    mixture, soft_counts, old_ll, new_ll, break_count = naive_em.run(X, mixture)
+    mixture, post, old_ll, new_ll= naive_em.run(X, mixture)
 
     print(f"Final mixture: \n{mixture}")
-    print(f"C: {break_count}")
+    # print(f"C: {break_count}")
     print(f"Old LL: {old_ll}")
     print(f"LL: {new_ll}")
 
