@@ -4,8 +4,10 @@ import common
 import naive_em
 import em
 import matplotlib.pyplot as plt
-from plotly.subplots import make_subplots
 import plotly.graph_objects as go
+import time
+from plotly.subplots import make_subplots
+
 
 
 def km(X, Ks, seeds):
@@ -24,8 +26,12 @@ def km(X, Ks, seeds):
             #     common.plot(X=X, mixture=mixture, post=post, title=title), 
             #     row=a, col=b
             #     )
+            name = f'K{K}-seed{seed}'
             common.plot(X=X, mixture=mixture, post=post, title=title)
-            plt.show()
+            plt.savefig('/home/Gael/Documents/Projects/MITx/netflix/km/' + name + '.png')
+            time.sleep(2)
+            plt.close()
+            # plt.show()
             temp.append(round(cost, 3))
             # Managing rows and columns
             # if a < 2:
@@ -56,7 +62,11 @@ def n_em(X, Ks, seeds):
             #     row=a, col=b
             #     )
             common.plot(X=X, mixture=mixture, post=post, title=title)
-            plt.show()
+            name = f'K{K}-seed{seed}'
+            plt.savefig('/home/Gael/Documents/Projects/MITx/netflix/em/' + name + '.png')
+            time.sleep(2)
+            plt.close()
+            # plt.show()
             temp.append(round(ll, 3))
             # Managing rows and columns
             # if a < 2:
@@ -65,7 +75,7 @@ def n_em(X, Ks, seeds):
             #     b += 1
         # fig.update_layout(height=600, width=800, title_text=f"K={K}")
         # fig.show()
-        LL[K] = min(temp)
+        LL[K] = max(temp)
     print(f"Likelihoods: \n{LL}")
 
 
@@ -73,10 +83,10 @@ def main():
     X = np.loadtxt("toy_data.txt")
     Ks, seeds = np.array([1,2,3,4]), list(range(5))
     # print('Choose method: \n1-Kmeans\n2-EM algorithm')
-    choice = int(input("Choose method: \n1-Kmeans\n2-EM algorithm\nChoice: "))
+    choice = int(input("Choose method: \n1-Kmeans\n2-EM algorithm\nBoth\nChoice: "))
     if choice == 1:
         km(X, Ks, seeds)  # Running Kmeans
-    else:
+    elif choice == 2:
         n_em(X, Ks, seeds) # Running naive_em
 
 
