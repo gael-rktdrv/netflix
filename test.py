@@ -1,6 +1,7 @@
 import numpy as np
 import em
 import common
+import naive_em
 from common import GaussianMixture
 from scipy.stats import multivariate_normal as MN
 from scipy.stats import norm as N
@@ -55,17 +56,16 @@ def testing_estep():
     def estep(X, mixture):
         K, _ = mixture.mu.shape
         n, d = X.shape
-        gprob = lambda x, m, s: (1 / (2 * np.pi * s) ** (d / 2)) * (np.exp(-((x - m) ** 2).sum(axis=1) / (2 * s)))
-        soft_counts, ll_ = np.empty((0, K)), np.empty((0, K))
+        gprob = lambda x, m, s: (1 / (2*np.pi*s)**(d/2)) * (np.exp(-((x-m)**2).sum(axis=1) / (2*s)))
+        soft_counts, ll_ = np.empty((0,K)), np.empty((0,K))
 
         for i in range(n):
-            prob = gprob(np.tile(X[i], (K, 1)), mixture.mu, mixture.var)
-            # import pdb; pdb.set_trace()
-            prob_ll = prob.reshape(1, K)
-            prob_post = (prob * mixture.p) / (prob * mixture.p).sum()
+            prob = gprob(np.tile(X[i], (K,1)), mixture.mu, mixture.var)
+            prob = prob.reshape(1, K)
+            prob_post = (prob*mixture.p)/(prob*mixture.p).sum()
             soft_counts = np.append(soft_counts, prob_post, axis=0)
-            ll_ = np.append(ll_, prob_ll, axis=0)
-        ll = np.log((ll_ * mixture.p).sum(axis=1)).sum()
+            ll_ =  np.append(ll_, prob, axis=0)
+        ll = np.log((ll_*mixture.p).sum(axis=1)).sum()
 
         return soft_counts, ll
 
@@ -148,5 +148,48 @@ def testing_mstep():
     main()
 
 
+def testing_run():
+    X = np.array(
+        [[0.8579456, 0.8472517],
+         [0.6235637, 0.3843817],
+         [0.2975346, 0.0567130],
+         [0.2726563, 0.4776651],
+         [0.8121687, 0.4799772],
+         [0.3927848, 0.8360788],
+         [0.3373962, 0.6481719],
+         [0.3682415, 0.9571552],
+         [0.1403508, 0.8700873],
+         [0.4736081, 0.8009108],
+         [0.5204775, 0.6788795],
+         [0.7206326, 0.5820198],
+         [0.5373732, 0.7586156],
+         [0.1059076, 0.4736004],
+         [0.1863323, 0.7369182]]
+    )
+
+    mu = np.array(
+        [[0.62356370, 0.38438171],
+         [0.39278480, 0.83607876],
+         [0.81216873, 0.47997717],
+         [0.14035078, 0.87008726],
+         [0.36824154, 0.95715516],
+         [0.10590761, 0.47360042]]
+    )
+
+    K = 6
+
+    var = np.array([0.10038354, 0.07227467, 0.13240693, 0.12411825, 0.10497521, 0.12220856])
+    p = np.array([0.1680912, 0.15835331, 0.21384187, 0.14223565, 0.14295074, 0.17452722])
+    mixture = GaussianMixture(mu=mu, var=var, p=p)
+
+    """Updates"""
+    mixture, soft_counts, old_ll, new_ll, break_count = naive_em.run(X, mixture)
+
+    print(f"Final mixture: \n{mixture}")
+    print(f"C: {break_count}")
+    print(f"Old LL: {old_ll}")
+    print(f"LL: {new_ll}")
+
+
 if __name__ == "__main__":
-    testing_mstep()
+    testing_run()
