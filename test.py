@@ -188,8 +188,10 @@ def testing_bic():
 
     def get_bic(X, mixture, log_likelihood):
         N, _ = X.shape
-        n_params = mixture.mu.shape[0] * mixture.mu.shape[1] + mixture.p.shape[0] + mixture.var.shape[0]
-        # import pdb; pdb.set_trace()
+        get_n_ = lambda params: params.reshape(-1,1).shape[0]
+        n_params = 0
+        for i in mixture:
+            n_params += get_n_(i)
     
         return log_likelihood - 1/2 * (n_params - 1) * np.log(N)
 
