@@ -186,16 +186,7 @@ def testing_bic():
     mixture, *_, log_likelihood= naive_em.run(X, mixture)
 
 
-    def get_bic(X, mixture, log_likelihood):
-        N, _ = X.shape
-        get_n_ = lambda params: params.reshape(-1,1).shape[0]
-        n_params = 0
-        for i in mixture:
-            n_params += get_n_(i)
-    
-        return log_likelihood - 1/2 * (n_params - 1) * np.log(N)
-
-    print(f"BIC: {get_bic(X, mixture, log_likelihood)}")
+    print(f"BIC: {common.bic(X, mixture, log_likelihood)}")
 
 
 if __name__ == "__main__":
