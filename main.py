@@ -10,7 +10,7 @@ from plotly.subplots import make_subplots
 
 
 
-def km(X, Ks, seeds):
+def km(X, Ks, seeds, decim):
     costs = {}
     
     for K in Ks:
@@ -22,29 +22,29 @@ def km(X, Ks, seeds):
             name = f'K{K}-seed{seed}'
             common.plot(X=X, mixture=mixture, post=post, title=title)
             plt.savefig('/home/Gael/Documents/Projects/MITx/netflix/km/' + name + '.png')
-            time.sleep(2)
-            plt.close()
+            # time.sleep(2)
+            # plt.close()
             # plt.show()
-            temp.append(round(cost, 3))
+            temp.append(round(cost, decim))
         costs[K] = min(temp)
     print(costs)
 
 
-def n_em(X, Ks, seeds):
+def n_em(X, Ks, seeds, decim):
     LL = {}
     
     for K in Ks:
         temp = []
         for seed in seeds:
             mixture, post = common.init(X, K=K, seed=seed)
-            mixture, post, ll, _ = naive_em.run(X, mixture)
-            title = f'K={K} | seed={seed} | likelihood={ll:.3f}'
+            mixture, post, _, new_ll, _ = naive_em.run(X, mixture)
+            title = f'K={K} | seed={seed} | likelihood={new_ll:.3f}'
             common.plot(X=X, mixture=mixture, post=post, title=title)
             name = f'K{K}-seed{seed}'
             plt.savefig('/home/Gael/Documents/Projects/MITx/netflix/em/' + name + '.png')
-            time.sleep(2)
-            plt.close()
-            temp.append(round(ll, 3))
+            # time.sleep(2)
+            # plt.close()
+            temp.append(round(new_ll, decim))
         LL[K] = max(temp)
     print(f"Likelihoods: \n{LL}")
 
@@ -52,12 +52,14 @@ def n_em(X, Ks, seeds):
 def main():
     X = np.loadtxt("toy_data.txt")
     Ks, seeds = np.array([1,2,3,4]), list(range(5))
+    decim = 6  # Decimals points after the comma
+    args = (X, Ks, seeds, decim)
     # print('Choose method: \n1-Kmeans\n2-EM algorithm')
     choice = int(input("Choose method: \n1-Kmeans\n2-EM algorithm\nBoth\nChoice: "))
     if choice == 1:
-        km(X, Ks, seeds)  # Running Kmeans
+        km(*args)  # Running Kmeans
     elif choice == 2:
-        n_em(X, Ks, seeds) # Running naive_em
+        n_em(*args) # Running naive_em
 
 
 if __name__=="__main__":

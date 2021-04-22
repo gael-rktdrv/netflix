@@ -28,6 +28,7 @@ def estep(X: np.ndarray, mixture: GaussianMixture) -> Tuple[np.ndarray, float]:
         soft_counts = np.append(soft_counts, prob_post, axis=0)
         ll_ =  np.append(ll_, prob, axis=0)
     ll = np.log((ll_*mixture.p).sum(axis=1)).sum()
+    # ll = (ll_*np.log(mixture.p).sum()).sum()
 
     return soft_counts, ll
 
@@ -48,19 +49,19 @@ def mstep(X: np.ndarray, post: np.ndarray) -> GaussianMixture:
     nrow, ncol = X.shape
     _, K = post.shape
     cost = 0
-    up_mu = np.zeros((K, ncol))  # Initialize updates of mu
-    up_var = np.zeros(K)  # Initialize updates of var
+    mu = np.zeros((K, ncol))  # Initialize updates of mu
+    var = np.zeros(K)  # Initialize updates of var
     n_hat = post.sum(axis=0)  # Nk
     """Updates"""
-    up_p = 1 / nrow * n_hat  # Updates of p
+    p = 1 / nrow * n_hat  # Updates of p
     for j in range(K):
-        up_mu[j] = (post.T @ X)[j] / post.sum(axis=0)[j]
+        mu[j] = (post.T @ X)[j] / post.sum(axis=0)[j]
         # import pdb; pdb.set_trace()
-        sse = ((up_mu[j] - X[j]) ** 2).sum() * post[:, j]
+        sse = ((mu[j] - X[j]) ** 2).sum() * post[:, j]
         cost += sse
-        up_var[j] = sse.sum() / (ncol * n_hat[j])
+        var[j] = sse.sum() / (ncol * n_hat[j])
 
-    return GaussianMixture(mu=up_mu, var=up_var, p=up_p), cost
+    return GaussianMixture(mu=mu, var=var, p=p), cost
 
 
 def run(X: np.ndarray, mixture: GaussianMixture) -> Tuple[GaussianMixture, np.ndarray, float]:
@@ -82,9 +83,8 @@ def run(X: np.ndarray, mixture: GaussianMixture) -> Tuple[GaussianMixture, np.nd
     while (old_ll is None or new_ll - old_ll > 1e-6 * abs(new_ll)):
         old_ll = new_ll
         post, new_ll = estep(X, mixture)
-        # soft_counts = post * 1/
         mixture, cost = mstep(X, post)
 
-    return mixture, post, new_ll, cost
+    return mixture, post, old_ll, new_ll, cost
 
 
