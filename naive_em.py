@@ -19,14 +19,14 @@ def estep(X: np.ndarray, mixture: GaussianMixture) -> Tuple[np.ndarray, float]:
     K, _ = mixture.mu.shape
     n, d = X.shape
     gprob = lambda x, m, s: (1 / (2*np.pi*s)**(d/2)) * (np.exp(-((x-m)**2).sum(axis=1) / (2*s)))
-    soft_counts, ll_ = np.empty((0,K)), np.empty((0,K))
+    soft_counts, ll_ = np.empty((0, K)), np.empty((0, K))
 
     for i in range(n):
-        prob = gprob(np.tile(X[i], (K,1)), mixture.mu, mixture.var)
+        prob = gprob(np.tile(X[i], (K, 1)), mixture.mu, mixture.var)
         prob = prob.reshape(1, K)
         prob_post = (prob*mixture.p)/(prob*mixture.p).sum()
         soft_counts = np.append(soft_counts, prob_post, axis=0)
-        ll_ =  np.append(ll_, prob, axis=0)
+        ll_ = np.append(ll_, prob, axis=0)
     ll = np.log((ll_*mixture.p).sum(axis=1)).sum()
 
     return soft_counts, ll
@@ -46,7 +46,6 @@ def mstep(X: np.ndarray, post: np.ndarray) -> GaussianMixture:
     """
     nrow, ncol = X.shape
     _, K = post.shape
-    cost = 0
     mu = np.zeros((K, ncol))  # Initialize updates of mu
     var = np.zeros(K)  # Initialize updates of var
     n_hat = post.sum(axis=0)  # Nk
@@ -76,6 +75,7 @@ def run(X: np.ndarray, mixture: GaussianMixture) -> Tuple[GaussianMixture, np.nd
     """
     old_ll = None
     new_ll = None
+    post = None
     while (old_ll is None) or (new_ll - old_ll > 1e-6 * abs(new_ll)):
         old_ll = new_ll
         post, new_ll = estep(X, mixture)

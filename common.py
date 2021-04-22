@@ -15,7 +15,7 @@ class GaussianMixture(NamedTuple):
 def init(X: np.ndarray, K: int,
          seed: int = 0) -> Tuple[GaussianMixture, np.ndarray]:
     """Initializes the mixture model with random points as initial
-    means and uniform assingments
+    means and uniform assignments
 
     Args:
         X: (n, d) array holding the data
@@ -101,7 +101,7 @@ def bic(X: np.ndarray, mixture: GaussianMixture, log_likelihood: float) -> float
 
     # import pdb; pdb.set_trace()
 
-    get_n_params = lambda params: params.reshape(-1,1).shape[0]
+    get_n_params = lambda params: params.reshape(-1, 1).shape[0]
     n_params = sum(tuple(map(get_n_params, mixture)))
     
-    return log_likelihood.sum() - 1/2 * (n_params - 1) * np.log(N)
+    return log_likelihood - 1/2 * (n_params - 1) * np.log(N)
