@@ -66,6 +66,7 @@ def run(X: np.ndarray, mixture: GaussianMixture,
     """Runs the mixture model
 
     Args:
+        mixture:
         X: (n, d) array holding the data
         post: (n, K) array holding the soft counts
             for all components for all examples
@@ -79,7 +80,7 @@ def run(X: np.ndarray, mixture: GaussianMixture,
 
     prev_cost = None
     cost = None
-    while (prev_cost is None or prev_cost - cost > 1e-4):
+    while (prev_cost is None) or (prev_cost - cost > 1e-4):
         prev_cost = cost
         post = estep(X, mixture)
         mixture, cost = mstep(X, post)

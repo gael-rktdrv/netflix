@@ -40,7 +40,6 @@ def testing_mstep():
     print(f"Soft counts: {post.shape}")
 
 
-
 def testing_run():
     X = np.loadtxt("toy_data.txt")
     K = 6

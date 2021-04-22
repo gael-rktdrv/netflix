@@ -103,9 +103,6 @@ def bic(X: np.ndarray, mixture: GaussianMixture,
     # import pdb; pdb.set_trace()
 
     get_n_params = lambda params: params.reshape(-1,1).shape[0]
-    n_params = sum(list(map(get_n_params, mixture)))
+    n_params = sum(tuple(map(get_n_params, mixture)))
     
     return log_likelihood.sum() - 1/2 * (n_params - 1) * np.log(N)
-
-    raise NotImplementedError
-

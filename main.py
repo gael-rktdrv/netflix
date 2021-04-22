@@ -9,7 +9,6 @@ import time
 from plotly.subplots import make_subplots
 
 
-
 def km(X, Ks, seeds, decim):
     costs = {}
     
@@ -18,7 +17,7 @@ def km(X, Ks, seeds, decim):
         for seed in seeds:
             mixture, post = common.init(X, K=K, seed=seed)
             mixture, post, cost = kmeans.run(X, mixture, post)
-            title = f'K={K} | seed={seed} | cost={cost:.3f}'
+            title = f'KM: K={K} | seed={seed} | cost={cost:.3f}'
             name = f'K{K}-seed{seed}'
             common.plot(X=X, mixture=mixture, post=post, title=title)
             plt.savefig('/home/Gael/Documents/Projects/MITx/netflix/km/' + name + '.png')
@@ -37,8 +36,8 @@ def n_em(X, Ks, seeds, decim):
         temp = []
         for seed in seeds:
             mixture, post = common.init(X, K=K, seed=seed)
-            mixture, post, _, new_ll, _ = naive_em.run(X, mixture)
-            title = f'K={K} | seed={seed} | likelihood={new_ll:.3f}'
+            mixture, post, _, new_ll = naive_em.run(X, mixture)
+            title = f'EM: K={K} | seed={seed} | likelihood={new_ll:.3f}'
             common.plot(X=X, mixture=mixture, post=post, title=title)
             name = f'K{K}-seed{seed}'
             plt.savefig('/home/Gael/Documents/Projects/MITx/netflix/em/' + name + '.png')
@@ -64,7 +63,6 @@ def main():
 
 if __name__=="__main__":
     main()
-
 
 
 # def n_em(X, Ks, seeds):

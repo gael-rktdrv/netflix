@@ -28,10 +28,8 @@ def estep(X: np.ndarray, mixture: GaussianMixture) -> Tuple[np.ndarray, float]:
         soft_counts = np.append(soft_counts, prob_post, axis=0)
         ll_ =  np.append(ll_, prob, axis=0)
     ll = np.log((ll_*mixture.p).sum(axis=1)).sum()
-    # ll = (ll_*np.log(mixture.p).sum()).sum()
 
     return soft_counts, ll
-
 
 
 def mstep(X: np.ndarray, post: np.ndarray) -> GaussianMixture:
@@ -58,19 +56,17 @@ def mstep(X: np.ndarray, post: np.ndarray) -> GaussianMixture:
         mu[j] = (post.T @ X)[j] / post.sum(axis=0)[j]
         # import pdb; pdb.set_trace()
         sse = ((mu[j] - X[j]) ** 2).sum() * post[:, j]
-        cost += sse
         var[j] = sse.sum() / (ncol * n_hat[j])
 
-    return GaussianMixture(mu=mu, var=var, p=p), cost
+    return GaussianMixture(mu=mu, var=var, p=p)
 
 
-def run(X: np.ndarray, mixture: GaussianMixture) -> Tuple[GaussianMixture, np.ndarray, float]:
+def run(X: np.ndarray, mixture: GaussianMixture) -> Tuple[GaussianMixture, np.ndarray, float, float]:
     """Runs the mixture model
 
     Args:
+        mixture:
         X: (n, d) array holding the data
-        post: (n, K) array holding the soft counts
-            for all components for all examples
 
     Returns:
         GaussianMixture: the new gaussian mixture
@@ -80,11 +76,9 @@ def run(X: np.ndarray, mixture: GaussianMixture) -> Tuple[GaussianMixture, np.nd
     """
     old_ll = None
     new_ll = None
-    while (old_ll is None or new_ll - old_ll > 1e-6 * abs(new_ll)):
+    while (old_ll is None) or (new_ll - old_ll > 1e-6 * abs(new_ll)):
         old_ll = new_ll
         post, new_ll = estep(X, mixture)
-        mixture, cost = mstep(X, post)
+        mixture = mstep(X, post)
 
-    return mixture, post, old_ll, new_ll, cost
-
-
+    return mixture, post, old_ll, new_ll
