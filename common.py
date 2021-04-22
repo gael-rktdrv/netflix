@@ -85,14 +85,13 @@ def plot(X: np.ndarray, mixture: GaussianMixture, post: np.ndarray,
 def rmse(X, Y):
     return np.sqrt(np.mean((X - Y)**2))
 
-def bic(X: np.ndarray, mixture: GaussianMixture,
-        log_likelihood: float) -> float:
-    """Computes the Bayesian Information Criterion for a
-    mixture of gaussians
+
+def bic(X: np.ndarray, mixture: GaussianMixture, log_likelihood: float) -> float:
+    """Computes the Bayesian Information Criterion for a mixture of Gaussian.
 
     Args:
-        X: (n, d) array holding the data
-        mixture: a mixture of spherical gaussian
+        mixture: Parameters of Theta (the clustering parameters)
+        X: (n, d) array holding the data mixture: a mixture of spherical gaussian
         log_likelihood: the log-likelihood of the data
 
     Returns:
