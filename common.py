@@ -100,9 +100,7 @@ def bic(X: np.ndarray, mixture: GaussianMixture,
     """
     N, _ = X.shape
     get_n_params = lambda params: params.reshape(-1,1).shape[0]
-    n_params = 0
-    for i in mixture:
-        n_params += get_n_params(i)
+    n_params = sum(list(map(get_n_params, mixture)))
     
     return log_likelihood - 1/2 * (n_params - 1) * np.log(N)
 
