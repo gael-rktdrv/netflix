@@ -22,6 +22,7 @@ def estep(X: np.ndarray, mixture: GaussianMixture) -> Tuple[np.ndarray, float]:
     soft_counts, ll_ = np.empty((0, K)), np.empty((0, K))
 
     for i in range(n):
+        import pdb; pdb.set_trace()
         prob = gprob(np.tile(X[i], (K, 1)), mixture.mu, mixture.var)
         prob = prob.reshape(1, K)
         prob_post = (prob*mixture.p)/(prob*mixture.p).sum()
@@ -53,7 +54,6 @@ def mstep(X: np.ndarray, post: np.ndarray) -> GaussianMixture:
     p = 1 / nrow * n_hat  # Updates of p
     for j in range(K):
         mu[j] = (post.T @ X)[j] / post.sum(axis=0)[j]
-        # import pdb; pdb.set_trace()
         sse = ((mu[j] - X[j]) ** 2).sum() * post[:, j]
         var[j] = sse.sum() / (ncol * n_hat[j])
 
