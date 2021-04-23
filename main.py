@@ -4,9 +4,6 @@ import common
 import naive_em
 import em
 import matplotlib.pyplot as plt
-import plotly.graph_objects as go
-import time
-from plotly.subplots import make_subplots
 
 
 def km(X, Ks, seeds, decim):
@@ -58,7 +55,7 @@ def main():
     if choice == 1:
         km(*args)  # Running Kmeans
     elif choice == 2:
-        n_em(*args) # Running naive_em
+        n_em(*args)  # Running naive_em
 
 
 if __name__=="__main__":

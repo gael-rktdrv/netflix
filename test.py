@@ -2,10 +2,7 @@ import numpy as np
 import em
 import common
 import naive_em
-from common import GaussianMixture
-from scipy.stats import multivariate_normal as MN
-from scipy.stats import norm as N
-from numpy.linalg import norm
+
 
 X = np.loadtxt("test_incomplete.txt")
 X_gold = np.loadtxt("test_complete.txt")
@@ -46,10 +43,9 @@ def testing_run():
     mixture, _ = common.init(X, K)
 
     """Updates"""
-    mixture, post, old_ll, new_ll, cost = naive_em.run(X, mixture)
+    mixture, post, old_ll, new_ll = naive_em.run(X, mixture)
 
     print(f"Final mixture: \n{mixture}")
-    # print(f"C: {break_count}")
     print(f"Old LL: {old_ll}")
     print(f"LL: {new_ll}")
 
