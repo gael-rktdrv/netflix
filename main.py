@@ -51,7 +51,7 @@ def main():
     decim = 6  # Decimals points after the comma
     args = (X, Ks, seeds, decim)
     # print('Choose method: \n1-Kmeans\n2-EM algorithm')
-    choice = int(input("Choose method: \n1-Kmeans\n2-EM algorithm\nBoth\nChoice: "))
+    choice = int(input("Choose method: \n1-Kmeans\n2-EM algorithm\nChoice: "))
     if choice == 1:
         km(*args)  # Running Kmeans
     elif choice == 2:

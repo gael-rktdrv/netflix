@@ -21,7 +21,6 @@ def estep(X: np.ndarray, mixture: GaussianMixture) -> Tuple[np.ndarray, float]:
     raise NotImplementedError
 
 
-
 def mstep(X: np.ndarray, post: np.ndarray, mixture: GaussianMixture,
           min_variance: float = .25) -> GaussianMixture:
     """M-step: Updates the gaussian mixture by maximizing the log-likelihood
