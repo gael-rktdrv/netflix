@@ -54,14 +54,14 @@ class Test:
 
 
 def main():
-    n_clusters = 6
+    n_clusters = 3
     test = Test("toy_data.txt", n_clusters)
-    print("E-step results:")
-    test.testing_estep()
-    print("M-step results:")
-    test.testing_mstep()
-    print("EM algorithm results:")
-    test.testing_run()
+    # print("E-step results:")
+    # test.testing_estep()
+    # print("M-step results:")
+    # test.testing_mstep()
+    # print("EM algorithm results:")
+    # test.testing_run()
     print("BIC results:")
     test.testing_bic()
 
