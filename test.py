@@ -7,10 +7,6 @@ import naive_em
 X = np.loadtxt("test_incomplete.txt")
 X_gold = np.loadtxt("test_complete.txt")
 
-K = 4
-n, d = X.shape
-seed = 0
-
 
 class Test:
 
@@ -54,6 +50,8 @@ class Test:
 
 
 def main():
+    n, d = X.shape
+    seed = 0
     n_clusters = 3
     test = Test("toy_data.txt", n_clusters)
     # print("E-step results:")
