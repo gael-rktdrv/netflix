@@ -108,7 +108,7 @@ def bic(X: np.ndarray, mixture: GaussianMixture, log_likelihood: float) -> float
 
 
 def log_gaussian(x: np.ndarray, mean: np.ndarray, var: float) -> float:
-    """Computes the log probablity of vector x under a normal distribution
+    """Computes the log probability of vector x under a normal distribution
 
     Args:
         x: (d, ) array holding the vector's coordinates

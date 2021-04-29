@@ -16,7 +16,7 @@ def estep(X: np.ndarray, mixture: GaussianMixture) -> Tuple[np.ndarray, float]:
         np.ndarray: (n, K) array holding the soft counts
             for all components for all examples
         float: log-likelihood of the assignment
-
+12
     """
     n, _ = X.shape
     K, _ = mixture.mu.shape
@@ -65,7 +65,7 @@ def mstep(X: np.ndarray, post: np.ndarray, mixture: GaussianMixture,
         for l in range(d):
             mask = (X[:, l] != 0)
             n_sum = post[mask, j].sum()
-            if (n_sum >= 1):
+            if n_sum >= 1:
                 # Updating mean
                 mu[j, l] = (X[mask, l] @ post[mask, j]) / n_sum
             # Computing variance
@@ -95,7 +95,7 @@ def run(X: np.ndarray, mixture: GaussianMixture,
     """
     prev_ll = None
     ll = None
-    while (prev_ll is None or ll - prev_ll > 1e-6 * np.abs(ll)):
+    while (prev_ll is None) or (ll - prev_ll > 1e-6 * np.abs(ll)):
         prev_ll = ll
         post, ll = estep(X, mixture)
         mixture = mstep(X, post, mixture)
