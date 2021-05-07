@@ -44,7 +44,7 @@ class Test:
 
     def testing_bic(self):
         mixture, _ = common.init(self.X_data, self.n_clusters)
-        mixture, *_, log_likelihood= naive_em.run(X, mixture)14
+        mixture, *_, log_likelihood= naive_em.run(X, mixture)
         # Get Results
         print(f"BIC: {common.bic(X, mixture, log_likelihood)}")
 
